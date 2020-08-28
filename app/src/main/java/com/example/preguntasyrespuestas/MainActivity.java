@@ -5,10 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -18,18 +18,15 @@ public class MainActivity extends AppCompatActivity {
     private Button botonresponder;
     private TextView vista;
     private TextView tiempo;
-    private ArrayList<Pregunta> question;
+    private Pregunta question;
     private TextView prueba;
-    int nm1;
-    int nm2;
-    int simbolo;
-    private int i;
+    private Button intentar;
+    int i;
     String convertir;
     String calculo;
     int validacion;
     int segs = 30;
     int contador = 0;
-    Boolean validador;
 
 
     @SuppressLint("SetTextI18n")
@@ -43,62 +40,47 @@ public class MainActivity extends AppCompatActivity {
         botonresponder = findViewById(R.id.botonresponder);
         vista = findViewById(R.id.vista);
         tiempo = findViewById(R.id.tiempo);
-        prueba = findViewById(R.id.prueba);
+        prueba = findViewById(R.id.puntos);
+        intentar = findViewById(R.id.intentar);
+
         Log.e("hola", "aqui");
-        question = new ArrayList<>();
-        generarPregunta();
         time();
+        hacerPregunta();
+        prueba.setText(""+contador);
         //para iniciar un boton
         botonresponder.setOnClickListener(
                 (view) -> {
 
-                    //para extraer el texto
-                    convertir = respuesta.getText().toString();
-                    //validacion = Integer.parseInt(convertir);
-                    /*for(i = 0; i < question.size(); i++){
-                        if(validacion == question.get(i).getResultado()){
-                            generarPregunta();
-                            segs = 30;
-                        }*/
-                    for(i = 0; i < question.size();i++){
-
-                        if(convertir.equals(Integer.toString(question.get(i).getResultado()))){
-                            generarPregunta();
-                            segs = 30;
-                            contador++;
-                            //prueba.setText(contador);
+                        if (Integer.parseInt(respuesta.getText().toString()) == question.getResultado()) {
+                            //hacerPregunta();
+                            contador += 10;
+                            hacerPregunta();
+                            respuesta.setText("");
+                        }else{
+                            contador -= 10;
                         }
+                    prueba.setText(""+contador);
+                }
+        );
 
-                    }
+        intentar.setOnClickListener(
 
+                (view )->{
 
-
-
-                    //validacion = Integer.parseInt(convertir);
-                    //validar();
-                    Toast.makeText(this, convertir + " ", Toast.LENGTH_LONG).show();
-                    //vista.setText(calculo);
+                    segs = 30;
+                    intentar.setVisibility(View.GONE);
 
                 }
+
         );
 
     }
 
-
-    public void generarPregunta(){
-
-        nm1 = (int) (Math.random()*30);
-        nm2 = (int) (Math.random()*30);
-        simbolo = (int) (Math.random()*3);
-        question.add(new Pregunta(nm1,nm2,simbolo));
-        for(i = 0; i < question.size(); i++){
-            question.get(i).hacerPregunta();
-            vista.setText(""+ question.get(i).retorno());
-
-        }
-
+    public void hacerPregunta(){
+        question = new Pregunta();
+        question.hacerPregunta();
+        vista.setText(""+ question.retorno());
     }
-
 
     public void time(){
 
@@ -116,6 +98,10 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(
                                 () -> {
                                     tiempo.setText(""+segs);
+                                    if( segs <= 0){
+                                        segs = 0;
+                                        intentar.setVisibility(View.VISIBLE);
+                                    }
                                 }
                         );
                     }
@@ -128,3 +114,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
+
+
+
