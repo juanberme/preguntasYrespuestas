@@ -59,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
                         }else{
                             contador -= 10;
                         }
-                    prueba.setText(""+contador);
+                        prueba.setText(""+contador);
+
                 }
         );
 
